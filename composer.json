@@ -5,7 +5,7 @@
     "keywords": ["php","colaphp","db"],
     "type": "library",
     "require": {
-        "php": ">=5.6.40"
+        "php": ">=5.6"
     },
     "autoload": {
         "files": [
