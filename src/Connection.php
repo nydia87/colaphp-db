@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * @contact  nydia87 <349196713@qq.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0
@@ -197,14 +195,15 @@ class Connection implements ConnectionInterface
 			return $me->getPdo()->prepare($query)->execute($bindings);
 		});
 	}
-	
+
 	/**
-	 * 返回插入SQL LastID
+	 * 返回插入SQL LastID.
 	 *
 	 * @param [type] $name
 	 * @return int
 	 */
-	public function lastInsertId($name = null) {
+	public function lastInsertId($name = null)
+	{
 		return (int) $this->getPdo()->lastInsertId($name);
 	}
 
@@ -242,6 +241,7 @@ class Connection implements ConnectionInterface
 			if ($me->pretending()) {
 				return true;
 			}
+
 			return (bool) $me->getPdo()->exec($query);
 		});
 	}
@@ -273,11 +273,13 @@ class Connection implements ConnectionInterface
 	public function transaction(Closure $callback)
 	{
 		$this->beginTransaction();
+
 		try {
 			$result = $callback($this);
 			$this->commit();
 		} catch (Exception $e) {
 			$this->rollBack();
+
 			throw $e;
 		}
 

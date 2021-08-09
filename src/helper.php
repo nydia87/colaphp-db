@@ -1,12 +1,8 @@
 <?php
-
-declare(strict_types=1);
 /**
  * @contact  nydia87 <349196713@qq.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0
  */
-// 助手函数
-
 if (! function_exists('array_get')) {
 	/**
 	 * 获取配置.
@@ -151,6 +147,7 @@ if (! function_exists('getPDO')) {
 			$dbFactory = new \Colaphp\Db\Connectors\ConnectionFactory();
 			$pdos[$poolname] = $dbFactory->make($config, $poolname);
 		}
+
 		return $pdos[$poolname];
 	}
 }

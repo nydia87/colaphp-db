@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * @contact  nydia87 <349196713@qq.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0
@@ -45,6 +43,7 @@ class SqlServerConnector extends Connector implements ConnectorInterface
 		if (in_array('dblib', $this->getAvailableDrivers())) {
 			return $this->getDblibDsn($config);
 		}
+
 		return $this->getSqlSrvDsn($config);
 	}
 
