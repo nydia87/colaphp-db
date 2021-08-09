@@ -197,6 +197,16 @@ class Connection implements ConnectionInterface
 			return $me->getPdo()->prepare($query)->execute($bindings);
 		});
 	}
+	
+	/**
+	 * 返回插入SQL LastID
+	 *
+	 * @param [type] $name
+	 * @return int
+	 */
+	public function lastInsertId($name = null) {
+		return (int) $this->getPdo()->lastInsertId($name);
+	}
 
 	/**
 	 * 修改、删除操作.
