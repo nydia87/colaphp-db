@@ -78,6 +78,20 @@ class Connection implements ConnectionInterface
 	protected $config = [];
 
 	/**
+	 * 数据库
+	 *
+	 * @var string
+	 */
+	protected $database = '';
+
+	/**
+	 * 表前缀
+	 *
+	 * @var string
+	 */
+	protected $tablePrefix = '';
+
+	/**
 	 * 初始化.
 	 *
 	 * @param string $database
