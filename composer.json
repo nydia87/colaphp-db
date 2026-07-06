@@ -15,9 +15,6 @@
             "ColaPHP\\Db\\": "src/"
         }
     },
-    "config": {
-        "sort-packages": true
-    },
     "authors": [
         {
             "name": "nydia87",
