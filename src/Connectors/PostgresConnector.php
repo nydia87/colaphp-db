@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
+ */
+
 namespace ColaPHP\Db\Connectors;
 
 class PostgresConnector extends Connector

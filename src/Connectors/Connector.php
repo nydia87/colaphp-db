@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
+ */
 
 namespace ColaPHP\Db\Connectors;
 
@@ -15,10 +19,10 @@ abstract class Connector
 		\PDO::ATTR_EMULATE_PREPARES => false,
 	];
 
-    /**
-     * 连接数据库入口.
-     */
-    abstract function connect(array $config);
+	/**
+	 * 连接数据库入口.
+	 */
+	abstract public function connect(array $config);
 
 	/**
 	 * 获取合并后的配置.
@@ -32,6 +36,8 @@ abstract class Connector
 
 	/**
 	 * 创建连接.
+	 *
+	 * @param mixed $dsn
 	 */
 	public function createConnection($dsn, array $config, array $options)
 	{

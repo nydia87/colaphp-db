@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
+ */
 
 namespace ColaPHP\Db\Connections;
 
@@ -17,7 +21,7 @@ class Connection
 	protected $slavePdo;
 
 	/**
-     * 重连（需自定义）
+	 * 重连（需自定义）.
 	 */
 	protected $reconnector;
 
@@ -37,7 +41,7 @@ class Connection
 	protected $logging = false;
 
 	/**
-	 * 调试
+	 * 调试.
 	 */
 	protected $debuging = false;
 
@@ -56,8 +60,11 @@ class Connection
 	 */
 	protected $tablePrefix = '';
 
-    /**
+	/**
 	 * 初始化.
+	 *
+	 * @param mixed $database
+	 * @param mixed $tablePrefix
 	 */
 	public function __construct(\PDO $pdo, $database = '', $tablePrefix = '', array $config = [])
 	{
@@ -69,6 +76,10 @@ class Connection
 
 	/**
 	 * 查询单条记录.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
+	 * @param mixed $slave
 	 */
 	public function selectOne($query, $bindings = [], $slave = true)
 	{
@@ -79,11 +90,14 @@ class Connection
 
 	/**
 	 * 查询多条记录|直接操作.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
+	 * @param mixed $slave
 	 */
 	public function select($query, $bindings = [], $slave = true)
 	{
 		return $this->run($query, $bindings, function ($me, $query, $bindings) use ($slave) {
-
 			if ($me->debuging) {
 				return [];
 			}
@@ -97,40 +111,49 @@ class Connection
 
 	/**
 	 * 插入入口.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
 	 */
 	public function insert($query, $bindings = [])
 	{
-        return $this->run($query, $bindings, function ($me, $query, $bindings) {
+		return $this->run($query, $bindings, function ($me, $query, $bindings) {
+			if ($me->debuging) {
+				return true;
+			}
 
-            if ($me->debuging) {
-                return true;
-            }
+			$bindings = $me->prepareBindings($bindings);
 
-            $bindings = $me->prepareBindings($bindings);
-
-            return $me->getPdo()->prepare($query)->execute($bindings);
-        });
+			return $me->getPdo()->prepare($query)->execute($bindings);
+		});
 	}
-
 
 	/**
 	 * 删除入口.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
 	 */
 	public function delete($query, $bindings = [])
 	{
 		return $this->affectingStatement($query, $bindings);
 	}
 
-    /**
-     * 修改入口.
-     */
-    public function update($query, $bindings = [])
-    {
-        return $this->affectingStatement($query, $bindings);
-    }
+	/**
+	 * 修改入口.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
+	 */
+	public function update($query, $bindings = [])
+	{
+		return $this->affectingStatement($query, $bindings);
+	}
 
 	/**
 	 * 返回插入SQL LastID.
+	 *
+	 * @param null|mixed $name
 	 */
 	public function lastId($name = null)
 	{
@@ -138,53 +161,19 @@ class Connection
 	}
 
 	/**
-	 * 修改、删除操作.
-	 */
-	protected function affectingStatement($query, $bindings = [])
-	{
-		return $this->run($query, $bindings, function ($me, $query, $bindings) {
-
-			if ($me->debuging) {
-				return 0;
-			}
-
-			$statement = $me->getPdo()->prepare($query);
-
-			$statement->execute($me->prepareBindings($bindings));
-
-			return $statement->rowCount();
-		});
-	}
-
-	/**
 	 * 无参数操作.
+	 *
+	 * @param mixed $query
 	 */
 	public function exec($query)
 	{
 		return $this->run($query, [], function ($me, $query) {
-
 			if ($me->debuging) {
 				return true;
 			}
 
 			return (bool) $me->getPdo()->exec($query);
 		});
-	}
-
-	/**
-	 * 参数处理.
-	 */
-	protected function prepareBindings(array $bindings)
-	{
-		foreach ($bindings as $key => $value) {
-			if ($value instanceof \DateTime) {
-				$bindings[$key] = $value->format($this->getDateFormat());
-			} elseif (false === $value) {
-				$bindings[$key] = 0;
-			}
-		}
-
-		return $bindings;
 	}
 
 	/**
@@ -245,8 +234,8 @@ class Connection
 	}
 
 	/**
-	 * 调试
-     *
+	 * 调试.
+	 *
 	 * $db->debug(function() use ($migration, $method)
 	 * 	{
 	 * 		$migration->$method();
@@ -255,7 +244,7 @@ class Connection
 	public function debug(\Closure $callback)
 	{
 		$logging = $this->logging;
-        $debuging = $this->debuging;
+		$debuging = $this->debuging;
 
 		$this->enableLog();
 
@@ -263,12 +252,12 @@ class Connection
 
 		$this->logs = [];
 
-        try {
-            $callback($this);
-        } finally {
-            $this->logging = $logging;
-            $this->debuging = $debuging;
-        }
+		try {
+			$callback($this);
+		} finally {
+			$this->logging = $logging;
+			$this->debuging = $debuging;
+		}
 
 		return $this->logs;
 	}
@@ -294,16 +283,6 @@ class Connection
 	}
 
 	/**
-	 * 日期格式化.
-	 *
-	 * @return string
-	 */
-	protected function getDateFormat()
-	{
-		return 'Y-m-d H:i:s';
-	}
-
-	/**
 	 * 获取PDO.
 	 */
 	public function getPdo()
@@ -325,11 +304,13 @@ class Connection
 
 	/**
 	 * 设置PDO.
+	 *
+	 * @param mixed $pdo
 	 */
 	public function setPdo($pdo)
 	{
 		if ($this->transactions >= 1) {
-			throw new \RuntimeException("pdo transaction is running ..");
+			throw new \RuntimeException('pdo transaction is running ..');
 		}
 
 		$this->pdo = $pdo;
@@ -339,20 +320,12 @@ class Connection
 
 	/**
 	 * 设置只读PDO.
+	 *
+	 * @param mixed $pdo
 	 */
 	public function setSlavePdo($pdo)
 	{
 		$this->slavePdo = $pdo;
-
-		return $this;
-	}
-
-	/**
-	 * 设置重连.
-	 */
-	protected function setReconnector(callable $reconnector)
-	{
-		$this->reconnector = $reconnector;
 
 		return $this;
 	}
@@ -363,18 +336,6 @@ class Connection
 	public function getDriverName()
 	{
 		return $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
-	}
-
-	/**
-	 * 记录日志.
-	 */
-	protected function logQuery($query, $bindings, $time = null)
-	{
-		if (! $this->logging ) {
-			return;
-		}
-
-		$this->logs[] = compact('query', 'bindings', 'time');
 	}
 
 	/**
@@ -393,24 +354,102 @@ class Connection
 		$this->logging = false;
 	}
 
-    /**
-     * 获取日志
-     */
-    public function getLogs()
-    {
-        return $this->logs;
-    }
+	/**
+	 * 获取日志.
+	 */
+	public function getLogs()
+	{
+		return $this->logs;
+	}
+
+	/**
+	 * 修改、删除操作.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
+	 */
+	protected function affectingStatement($query, $bindings = [])
+	{
+		return $this->run($query, $bindings, function ($me, $query, $bindings) {
+			if ($me->debuging) {
+				return 0;
+			}
+
+			$statement = $me->getPdo()->prepare($query);
+
+			$statement->execute($me->prepareBindings($bindings));
+
+			return $statement->rowCount();
+		});
+	}
+
+	/**
+	 * 参数处理.
+	 */
+	protected function prepareBindings(array $bindings)
+	{
+		foreach ($bindings as $key => $value) {
+			if ($value instanceof \DateTime) {
+				$bindings[$key] = $value->format($this->getDateFormat());
+			} elseif (false === $value) {
+				$bindings[$key] = 0;
+			}
+		}
+
+		return $bindings;
+	}
+
+	/**
+	 * 日期格式化.
+	 *
+	 * @return string
+	 */
+	protected function getDateFormat()
+	{
+		return 'Y-m-d H:i:s';
+	}
+
+	/**
+	 * 设置重连.
+	 */
+	protected function setReconnector(callable $reconnector)
+	{
+		$this->reconnector = $reconnector;
+
+		return $this;
+	}
+
+	/**
+	 * 记录日志.
+	 *
+	 * @param mixed      $query
+	 * @param mixed      $bindings
+	 * @param null|mixed $time
+	 */
+	protected function logQuery($query, $bindings, $time = null)
+	{
+		if (! $this->logging) {
+			return;
+		}
+
+		$this->logs[] = compact('query', 'bindings', 'time');
+	}
 
 	/**
 	 * 获取 Select PDO.
+	 *
+	 * @param mixed $slave
 	 */
 	protected function selectPdo($slave = true)
 	{
-		return ($slave && !is_null($this->getSlavePdo())) ? $this->getSlavePdo() : $this->getPdo();
+		return ($slave && ! is_null($this->getSlavePdo())) ? $this->getSlavePdo() : $this->getPdo();
 	}
 
 	/**
 	 * Closure 入口.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
 	 */
 	protected function run($query, $bindings, \Closure $callback)
 	{
@@ -436,6 +475,9 @@ class Connection
 
 	/**
 	 * Run a SQL statement.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
 	 */
 	protected function runQueryCallback($query, $bindings, \Closure $callback)
 	{
@@ -450,6 +492,9 @@ class Connection
 
 	/**
 	 * 如果丢失连接|重试连接.
+	 *
+	 * @param mixed $query
+	 * @param mixed $bindings
 	 */
 	protected function tryAgainIfCausedByLostConnection(QueryException $e, $query, $bindings, \Closure $callback)
 	{
@@ -488,6 +533,8 @@ class Connection
 
 	/**
 	 * 获取SQL执行时间.
+	 *
+	 * @param mixed $start
 	 */
 	protected function getElapsedTime($start)
 	{

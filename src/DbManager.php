@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
+ */
 
 namespace ColaPHP\Db;
 
@@ -13,13 +17,12 @@ use ColaPHP\Db\Connectors\SqlServerConnector;
 
 class DbManager
 {
+	protected $config = [];
 
-    protected $config = [];
-
-    public function __construct($config = [])
-    {
-        $this->config = $config;
-    }
+	public function __construct($config = [])
+	{
+		$this->config = $config;
+	}
 
 	/**
 	 * 建立PDO.
@@ -36,7 +39,9 @@ class DbManager
 	}
 
 	/**
-	 * 创建数据库连接
+	 * 创建数据库连接.
+	 *
+	 * @param mixed $config
 	 */
 	protected function createConnection($config = [])
 	{
@@ -49,14 +54,16 @@ class DbManager
 
 	/**
 	 * 读、写数据库对象
+	 *
+	 * @param mixed $config
 	 */
 	protected function createMasterSlaveConnection($config = [])
 	{
 		// 获取写库对象
-        $master = $this->createConnection($this->mergeConfig($config, $config['master']));
+		$master = $this->createConnection($this->mergeConfig($config, $config['master']));
 
-        // 获取从库对象
-        $slave = $this->createConnection($this->mergeConfig($config, $config['slave']));
+		// 获取从库对象
+		$slave = $this->createConnection($this->mergeConfig($config, $config['slave']));
 
 		// 持有从库对象
 		return $master->setSlavePdo($slave->getPdo());
@@ -64,32 +71,37 @@ class DbManager
 
 	/**
 	 * 合并读、写配置.
+	 *
+	 * @param mixed $config
+	 * @param mixed $merge
 	 */
-	protected function mergeConfig($config = [], $merge  = [])
+	protected function mergeConfig($config = [], $merge = [])
 	{
-        return array_diff_key(array_merge($config, $merge), array_flip( ['slave', 'master']));
+		return array_diff_key(array_merge($config, $merge), array_flip(['slave', 'master']));
 	}
 
-    /**
-     * 创建PDO连接.
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function getConnector($driver)
-    {
-        switch ($driver) {
-            case 'mysql':
-                return new MySqlConnector();
-            case 'pgsql':
-                return new PostgresConnector();
-            case 'sqlite':
-                return new SQLiteConnector();
-            case 'sqlsrv':
-                return new SqlServerConnector();
-        }
+	/**
+	 * 创建PDO连接.
+	 *
+	 * @param mixed $driver
+	 *
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getConnector($driver)
+	{
+		switch ($driver) {
+			case 'mysql':
+				return new MySqlConnector();
+			case 'pgsql':
+				return new PostgresConnector();
+			case 'sqlite':
+				return new SQLiteConnector();
+			case 'sqlsrv':
+				return new SqlServerConnector();
+		}
 
-        throw new \InvalidArgumentException("Unsupported driver [{$driver}]");
-    }
+		throw new \InvalidArgumentException("Unsupported driver [{$driver}]");
+	}
 
 	/**
 	 * 把PDO连接交给对象类.
@@ -97,6 +109,7 @@ class DbManager
 	 * @param string $driver
 	 * @param string $database
 	 * @param string $prefix
+	 * @param mixed  $config
 	 *
 	 * @throws \InvalidArgumentException
 	 */

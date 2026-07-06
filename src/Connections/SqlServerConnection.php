@@ -1,8 +1,13 @@
 <?php
+/**
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
+ */
+
 namespace ColaPHP\Db\Connections;
+
 class SqlServerConnection extends Connection
 {
-
 	public function transaction(\Closure $callback)
 	{
 		if ('sqlsrv' == $this->getDriverName()) {

@@ -1,10 +1,7 @@
 <?php
 /**
- * 获取配置.
- *
- * @param mixed      $array
- * @param mixed      $key
- * @param null|mixed $default
+ * @author: nydia87 <349196713@qq.com>
+ * @description:
  */
 function db_array_get($array, $key, $default = null)
 {
