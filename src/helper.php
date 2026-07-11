@@ -1,7 +1,6 @@
 <?php
 /**
  * @author: nydia87 <349196713@qq.com>
- * @description:
  */
 function db_array_get($array, $key, $default = null)
 {
