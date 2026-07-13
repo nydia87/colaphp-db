@@ -13,7 +13,7 @@ function db_array_get($array, $key, $default = null)
 	}
 
 	foreach (explode('.', $key) as $segment) {
-		if (! is_array($array) || ! array_key_exists($segment, $array)) {
+		if (!is_array($array) || !array_key_exists($segment, $array)) {
 			return db_value($default);
 		}
 

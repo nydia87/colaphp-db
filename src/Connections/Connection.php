@@ -2,7 +2,6 @@
 /**
  * @author: nydia87 <349196713@qq.com>
  */
-
 namespace ColaPHP\Db\Connections;
 
 use ColaPHP\Db\Exceptions\QueryException;
@@ -427,7 +426,7 @@ class Connection
 	 */
 	protected function logQuery($query, $bindings, $time = null)
 	{
-		if (! $this->logging) {
+		if (!$this->logging) {
 			return;
 		}
 
@@ -441,7 +440,7 @@ class Connection
 	 */
 	protected function selectPdo($slave = true)
 	{
-		return ($slave && ! is_null($this->getSlavePdo())) ? $this->getSlavePdo() : $this->getPdo();
+		return ($slave && !is_null($this->getSlavePdo())) ? $this->getSlavePdo() : $this->getPdo();
 	}
 
 	/**

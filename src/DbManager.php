@@ -1,8 +1,8 @@
 <?php
+
 /**
  * @author: nydia87 <349196713@qq.com>
  */
-
 namespace ColaPHP\Db;
 
 use ColaPHP\Db\Connections\MySqlConnection;

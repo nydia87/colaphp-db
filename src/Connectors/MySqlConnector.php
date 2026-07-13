@@ -1,8 +1,8 @@
 <?php
+
 /**
  * @author: nydia87 <349196713@qq.com>
  */
-
 namespace ColaPHP\Db\Connectors;
 
 class MySqlConnector extends Connector
@@ -26,7 +26,7 @@ class MySqlConnector extends Connector
 		// collation、charset
 		$collation = $config['collation'];
 		$charset = $config['charset'];
-		$names = "set names '{$charset}'" . (! is_null($collation) ? " collate '{$collation}'" : '');
+		$names = "set names '{$charset}'" . (!is_null($collation) ? " collate '{$collation}'" : '');
 		$connection->prepare($names)->execute();
 
 		// timezone
@@ -55,7 +55,7 @@ class MySqlConnector extends Connector
 	 */
 	protected function configHasSocket(array $config)
 	{
-		return isset($config['unix_socket']) && ! empty($config['unix_socket']);
+		return isset($config['unix_socket']) && !empty($config['unix_socket']);
 	}
 
 	/**
