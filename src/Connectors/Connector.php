@@ -12,6 +12,7 @@ abstract class Connector
 	 */
 	protected $options = [
 		\PDO::ATTR_CASE => \PDO::CASE_NATURAL,
+		\PDO::ATTR_TIMEOUT => 5,
 		\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
 		\PDO::ATTR_ORACLE_NULLS => \PDO::NULL_NATURAL,
 		\PDO::ATTR_STRINGIFY_FETCHES => false,
@@ -28,6 +29,10 @@ abstract class Connector
 	 */
 	public function getOptions(array $config)
 	{
+		if(isset($config['timeout'])){
+			$this->options[\PDO::ATTR_TIMEOUT] = $config['timeout'];
+		}
+		
 		$options = db_array_get($config, 'options', []);
 
 		return array_diff_key($this->options, $options) + $options;
@@ -44,6 +49,11 @@ abstract class Connector
 
 		$password = db_array_get($config, 'password');
 
-		return new \PDO($dsn, $username, $password, $options);
+		try {
+			$pdo = new \PDO($dsn, $username, $password, $options);
+			return $pdo;
+		} catch (PDOException $e) {
+			throw $e;
+		}
 	}
 }
