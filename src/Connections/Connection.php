@@ -244,8 +244,7 @@ class Connection
 		$logging = $this->logging;
 		$debuging = $this->debuging;
 
-		$this->enableLog();
-
+		$this->logging = true;
 		$this->debuging = true;
 
 		$this->logs = [];
@@ -337,19 +336,20 @@ class Connection
 	}
 
 	/**
-	 * 开启日志.
+	 * 设置日志状态.
+	 * @param boolean $logging
 	 */
-	public function enableLog()
+	public function setLogging($logging)
 	{
-		$this->logging = true;
+		$this->logging = $logging;
 	}
 
 	/**
-	 * 关闭日志.
+	 * 检查日志状态
 	 */
-	public function disableLog()
+	public function isLogging()
 	{
-		$this->logging = false;
+		return $this->logging == true;
 	}
 
 	/**
