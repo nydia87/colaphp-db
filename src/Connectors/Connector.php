@@ -52,7 +52,7 @@ abstract class Connector
 		try {
 			$pdo = new \PDO($dsn, $username, $password, $options);
 			return $pdo;
-		} catch (PDOException $e) {
+		} catch (\PDOException $e) {
 			throw $e;
 		}
 	}
